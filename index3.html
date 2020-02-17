@@ -8,8 +8,33 @@
       http-equiv="Content-Security-Policy"
       content="script-src 'self' 'unsafe-inline';"
     />
+    <link
+      rel="stylesheet"
+      href="node_modules/bootstrap/dist/css/bootstrap.min.css"
+    />
   </head>
   <body>
     <h1>RandomBg 3</h1>
+    <div id="clickBtn" class="btn btn-success">Random Bg 1</div>
   </body>
+  <script type="text/javascript">
+    const { ipcRenderer, remote } = require("electron");
+
+    function getRandomColor() {
+      const letters = "0123456789ABCDEF";
+      let color = "#";
+      for (var i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+      }
+      return color;
+    }
+
+    document.querySelector("#clickBtn").addEventListener("click", () => {
+      let window1 = remote.getGlobal("window1");
+      if (window1) window1.webContents.send("randomBg", getRandomColor());
+    });
+    ipcRenderer.on("randomBg", (event, color) => {
+      document.body.style.backgroundColor = color;
+    });
+  </script>
 </html>
