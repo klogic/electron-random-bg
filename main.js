@@ -63,27 +63,3 @@ function getRandomColor() {
   }
   return color;
 }
-
-// // Event handler for synchronous incoming messages
-ipcMain.on("randombg-2", (event, arg) => {
-  console.log(arg);
-
-  // Synchronous event emmision
-  event.sender.send("randombg-2", getRandomColor());
-});
-// // Event handler for synchronous incoming messages
-// ipcMain.on("randombg-2", (event, arg) => {
-//   console.log(arg);
-//   console.log(event.sender.webContents.id);
-//   event.sender.webContents.id = 3;
-//   console.log(event.sender.webContents.id);
-//   // Synchronous event emmision
-//   event.sender.send("randombg-3", getRandomColor());
-// });
-
-// // Event handler for synchronous incoming messages
-// ipcMain.on("randombg-3", (event, arg) => {
-//   event.sender.webContents.id = 1;
-//   // Synchronous event emmision
-//   event.sender.send("randombg-1", getRandomColor());
-// });
