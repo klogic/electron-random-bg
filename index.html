@@ -19,20 +19,10 @@
   <script type="text/javascript">
     const { ipcRenderer, remote } = require("electron");
 
-    function getRandomColor() {
-      const letters = "0123456789ABCDEF";
-      let color = "#";
-      for (var i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-      }
-      return color;
-    }
-
     document.querySelector("#clickBtn").addEventListener("click", () => {
-      let window2 = remote.getGlobal("window2");
-      if (window2) window2.webContents.send("randomBg", getRandomColor());
+      ipcRenderer.send("window2-change", "");
     });
-    ipcRenderer.on("randomBg", (event, color) => {
+    ipcRenderer.on("window1-change-reply", (event, color) => {
       document.body.style.backgroundColor = color;
     });
   </script>

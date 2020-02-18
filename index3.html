@@ -17,22 +17,12 @@
     <div id="clickBtn" class="btn btn-success">Random Bg 1</div>
   </body>
   <script type="text/javascript">
-    const { ipcRenderer, remote } = require("electron");
-
-    function getRandomColor() {
-      const letters = "0123456789ABCDEF";
-      let color = "#";
-      for (var i = 0; i < 6; i++) {
-        color += letters[Math.floor(Math.random() * 16)];
-      }
-      return color;
-    }
-
+    const { ipcRenderer } = require("electron");
     document.querySelector("#clickBtn").addEventListener("click", () => {
-      let window1 = remote.getGlobal("window1");
-      if (window1) window1.webContents.send("randomBg", getRandomColor());
+      ipcRenderer.send("window1-change", "");
     });
-    ipcRenderer.on("randomBg", (event, color) => {
+
+    ipcRenderer.on("window3-change-reply", (event, color) => {
       document.body.style.backgroundColor = color;
     });
   </script>
