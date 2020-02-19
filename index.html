@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>RandomBg 1</title>
+    <title>Random Link</title>
     <meta
       http-equiv="Content-Security-Policy"
       content="script-src 'self' 'unsafe-inline';"
@@ -13,14 +13,16 @@
     />
   </head>
   <body>
-    <h1>RandomBg 1</h1>
-    <div id="clickBtn" class="btn btn-success">Random Bg 2</div>
+    <div class="container text-center">
+      <h1>Random Link</h1>
+      <div id="clickBtn" class="btn btn-success">+ Window</div>
+    </div>
   </body>
   <script type="text/javascript">
     const { ipcRenderer, remote } = require("electron");
 
     document.querySelector("#clickBtn").addEventListener("click", () => {
-      ipcRenderer.send("window2-change", "");
+      ipcRenderer.send("window-created", "");
     });
     ipcRenderer.on("window1-change-reply", (event, color) => {
       document.body.style.backgroundColor = color;
