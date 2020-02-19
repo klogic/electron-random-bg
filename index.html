@@ -14,18 +14,27 @@
   </head>
   <body>
     <div class="container text-center">
-      <h1>Random Link</h1>
-      <div id="clickBtn" class="btn btn-success">+ Window</div>
+      <h1>Random Link <span id="windowId"></span></h1>
+      <div id="generateWindowBtn" class="btn btn-success">+ Window</div>
+      <div id="randomColorBtn" class="btn btn-success">Random Color</div>
     </div>
   </body>
   <script type="text/javascript">
-    const { ipcRenderer, remote } = require("electron");
+    const { ipcRenderer } = require("electron");
+    let windowId = null;
 
-    document.querySelector("#clickBtn").addEventListener("click", () => {
-      ipcRenderer.send("window-created", "");
+    document
+      .querySelector("#generateWindowBtn")
+      .addEventListener("click", () => {
+        ipcRenderer.send("window-created", "");
+      });
+
+    document.querySelector("#randomColorBtn").addEventListener("click", () => {
+      ipcRenderer.send("random-color", windowId);
     });
-    ipcRenderer.on("window1-change-reply", (event, color) => {
-      document.body.style.backgroundColor = color;
+
+    ipcRenderer.on("window-created-reply", (event, windowId) => {
+      document.getElementById("windowId").innerHTML = windowId;
     });
   </script>
 </html>

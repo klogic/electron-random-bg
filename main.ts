@@ -7,12 +7,22 @@ interface windowObject {
 app.whenReady().then(() => {
   // for store window Obj
   let objWindow: windowObject = {};
-  let [windowId, window] = createBrowserWindow();
-  objWindow[windowId] = window;
+  let [windowId, windowBrowser] = createBrowserWindow();
+  objWindow[windowId] = windowBrowser;
+  windowBrowser.webContents.on("did-finish-load", () => {
+    windowBrowser.webContents.send("window-created-reply", windowId);
+  });
 
   ipcMain.on("window-created", (event, arg) => {
-    let [windowId, window] = createBrowserWindow();
-    objWindow[windowId] = window;
+    let [windowId, windowBrowser] = createBrowserWindow();
+    objWindow[windowId] = windowBrowser;
+    windowBrowser.webContents.on("did-finish-load", () => {
+      windowBrowser.webContents.send("window-created-reply", windowId);
+    });
+  });
+
+  ipcMain.on("random-color", (event, arg) => {
+    windowBrowser.webContents.send("window-created-reply", windowId);
   });
 });
 
