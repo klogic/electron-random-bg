@@ -2,22 +2,17 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var electron_1 = require("electron");
 var manageBrowserWindow_1 = require("./manageBrowserWindow");
-electron_1.app.whenReady().then(function () {
-    var objWindow = {};
-    var _a = createBrowserWindow(), windowId = _a[0], windowBrowser = _a[1];
-    objWindow[windowId] = windowBrowser;
-    windowBrowser.webContents.on("did-finish-load", function () {
-        windowBrowser.webContents.send("window-created-reply", windowId);
+var objWindow = {};
+electron_1.app.on("browser-window-created", function (event, browser) {
+    objWindow[browser.id] = browser;
+    browser.webContents.on("did-finish-load", function () {
+        objWindow[1].webContents.send("main-process-reply", browser.id);
     });
+});
+electron_1.app.whenReady().then(function () {
+    var _a = createBrowserWindow(), windowId = _a[0], windowBrowser = _a[1];
     electron_1.ipcMain.on("window-created", function (event, arg) {
         var _a = createBrowserWindow(), windowId = _a[0], windowBrowser = _a[1];
-        objWindow[windowId] = windowBrowser;
-        windowBrowser.webContents.on("did-finish-load", function () {
-            windowBrowser.webContents.send("window-created-reply", windowId);
-        });
-    });
-    electron_1.ipcMain.on("random-color", function (event, arg) {
-        windowBrowser.webContents.send("window-created-reply", windowId);
     });
 });
 electron_1.app.on("window-all-closed", function () {

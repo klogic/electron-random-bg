@@ -15,26 +15,44 @@
   <body>
     <div class="container text-center">
       <h1>Random Link <span id="windowId"></span></h1>
-      <div id="generateWindowBtn" class="btn btn-success">+ Window</div>
-      <div id="randomColorBtn" class="btn btn-success">Random Color</div>
+      <div id="generateWindowContainer">
+      </div>
+      <div id="randomColorBgContainer">
+        </div>
+      </div>
     </div>
   </body>
   <script type="text/javascript">
     const { ipcRenderer } = require("electron");
     let windowId = null;
 
-    document
-      .querySelector("#generateWindowBtn")
-      .addEventListener("click", () => {
-        ipcRenderer.send("window-created", "");
-      });
+    // document.querySelector("#randomColorBtn").addEventListener("click", () => {
+    //   ipcRenderer.send("random-color", windowId);
+    // });
 
-    document.querySelector("#randomColorBtn").addEventListener("click", () => {
-      ipcRenderer.send("random-color", windowId);
-    });
+    ipcRenderer.on("main-process-reply", (event, windowId) => {
+      let localWindow = windowId - 1; // real window id - 1 for display
+      document.getElementById("generateWindowContainer").innerHTML =
+        "<div id='generateWindowBtn' class='btn btn-success'>+ Window</div>";
 
-    ipcRenderer.on("window-created-reply", (event, windowId) => {
-      document.getElementById("windowId").innerHTML = windowId;
+      div = document.getElementById("randomColorBgContainer");
+      if (windowId > 1) {
+        // display if not tray manager
+        div.innerHTML +=
+          "<div id='randomColorBtn-" +
+          windowId +
+          "' style='margin: 10px;' class='btn btn-success' onclick='sendRequestToServer("+windowId+")'> " +
+          localWindow +
+          "</div>";
+      }
+      document
+        .querySelector("#generateWindowBtn")
+        .addEventListener("click", () => {
+          ipcRenderer.send("window-created", "");
+        });
     });
+    function sendRequestToServer(windowId){
+      ipcRenderer.send("window-change-background", windowId);
+    }
   </script>
 </html>
