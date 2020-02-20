@@ -26,31 +26,37 @@
     const { ipcRenderer } = require("electron");
     let windowId = null;
 
-    // document.querySelector("#randomColorBtn").addEventListener("click", () => {
-    //   ipcRenderer.send("random-color", windowId);
-    // });
-
     ipcRenderer.on("main-process-reply", (event, windowId) => {
       let localWindow = windowId - 1; // real window id - 1 for display
       document.getElementById("generateWindowContainer").innerHTML =
-        "<div id='generateWindowBtn' class='btn btn-success'>+ Window</div>";
+        `<div id='generateWindowBtn' class='btn btn-success'>+ Window</div>`;
 
-      div = document.getElementById("randomColorBgContainer");
       if (windowId > 1) {
-        // display if not tray manager
-        div.innerHTML +=
-          "<div id='randomColorBtn-" +
-          windowId +
-          "' style='margin: 10px;' class='btn btn-success' onclick='sendRequestToServer("+windowId+")'> " +
-          localWindow +
-          "</div>";
-      }
-      document
-        .querySelector("#generateWindowBtn")
-        .addEventListener("click", () => {
-          ipcRenderer.send("window-created", "");
-        });
+        // display if not the first window
+        document.getElementById("randomColorBgContainer").innerHTML +=
+            `<div id='randomColorBtn-${windowId}' style='margin: 10px;' class='btn btn-success' 
+              onclick='sendRequestToServer(${windowId})'> ${localWindow}</div>`
+        }
+        document
+          .querySelector("#generateWindowBtn")
+          .addEventListener("click", () => {
+            ipcRenderer.send("window-created", "");
+          });
     });
+    ipcRenderer.on("window-change-background-reply-main", (event, args)=> {
+      const {status, windowId, message} = args
+      if(status == 'success'){
+        document.getElementById(`randomColorBtn-${windowId}`).style.backgroundColor = message
+      }
+    })
+    ipcRenderer.on("window-change-background-reply", (event, args)=> {
+      const {status, message} = args
+      if(status == 'success'){
+        document.body.style.backgroundColor = message;
+      }else{
+         alert(message) ;
+      }
+    })
     function sendRequestToServer(windowId){
       ipcRenderer.send("window-change-background", windowId);
     }

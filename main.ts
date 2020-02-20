@@ -1,8 +1,14 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import { manageBrowserWindow } from "./manageBrowserWindow";
+import axios, { AxiosPromise } from "axios";
 
 interface windowObject {
   [windowId: number]: BrowserWindow;
+}
+interface randomColorFromServer {
+  status: string;
+  windowId: number;
+  message: string;
 }
 
 // for store window Obj
@@ -13,11 +19,46 @@ app.on("browser-window-created", (event, browser) => {
     objWindow[1].webContents.send("main-process-reply", browser.id);
   });
 });
-app.whenReady().then(() => {
-  let [windowId, windowBrowser] = createBrowserWindow();
 
-  ipcMain.on("window-created", (event, arg) => {
-    let [windowId, windowBrowser] = createBrowserWindow();
+app.whenReady().then(() => {
+  createBrowserWindow();
+
+  ipcMain.on("window-created", (event, args) => {
+    createBrowserWindow();
+  });
+  ipcMain.on("window-change-background", async (event, windowId) => {
+    const getRandomColorFromServer: randomColorFromServer = await axios
+      .get("http://localhost:3001/randomColor")
+      .then(result => {
+        let response = {
+          status: "error",
+          windowId: windowId,
+          message: "response not found element color"
+        };
+        if (result && result.data && result.data.color) {
+          response = {
+            status: "success",
+            windowId: windowId,
+            message: result.data.color
+          };
+        }
+        return response;
+      })
+      .catch(error => {
+        return {
+          status: error,
+          windowId: windowId,
+          message: error.message
+        };
+      });
+    objWindow[windowId].webContents.send(
+      "window-change-background-reply",
+      getRandomColorFromServer
+    );
+    objWindow[1].webContents.send(
+      "window-change-background-reply-main",
+      getRandomColorFromServer
+    );
   });
 });
 
@@ -26,8 +67,7 @@ app.on("window-all-closed", () => {
     app.quit();
   }
 });
-function createBrowserWindow(): [number, BrowserWindow] {
+function createBrowserWindow(): BrowserWindow {
   const window = new manageBrowserWindow().initBrowserWindow();
-  const windowId = window.id;
-  return [windowId, window];
+  return window;
 }
