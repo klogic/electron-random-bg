@@ -34,5 +34,9 @@ export class manageBrowserWindow {
       mainWindow.webContents.send("main-process-reply", newWindow.id);
     });
   }
+  
+  getMainWindow(): BrowserWindow{
+    return this.objWindow[1]
+  }
 
 }
