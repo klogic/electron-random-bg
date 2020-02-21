@@ -7,7 +7,7 @@
     "preserveConstEnums": true,
     "sourceMap": true,
     "moduleResolution": "node",
-    "outDir": "."
+    "outDir": "./out"
   },
   "include": ["*"],
   "exclude": ["node_modules", "**/*.spec.ts"]

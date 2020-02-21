@@ -1,31 +1,24 @@
 import { app, BrowserWindow, ipcMain } from "electron";
-import { manageBrowserWindow } from "./manageBrowserWindow";
+import { manageBrowserWindow } from "./manager/manageBrowserWindow";
+import { windowObject, randomColorFromServer } from './model/index'
 import axios, { AxiosPromise } from "axios";
-
-interface windowObject {
-  [windowId: number]: BrowserWindow;
-}
-interface randomColorFromServer {
-  status: string;
-  windowId: number;
-  message: string;
-}
 
 // for store window Obj
 let objWindow: windowObject = {};
 app.on("browser-window-created", (event, browser) => {
-  objWindow[browser.id] = browser;
   browser.webContents.on("did-finish-load", () => {
-    objWindow[1].webContents.send("main-process-reply", browser.id);
+    browser.webContents.send("main-process-reply", browser.id);
   });
+  // objWindow[browser.id] = browser;
+  // browser.webContents.on("did-finish-load", () => {
+  //   objWindow[1].webContents.send("main-process-reply", browser.id);
+  // });
 });
 
 app.whenReady().then(() => {
-  createBrowserWindow();
+  const newWindow = new manageBrowserWindow;
+  newWindow.createBrowserWindow();
 
-  ipcMain.on("window-created", (event, args) => {
-    createBrowserWindow();
-  });
   ipcMain.on("window-change-background", async (event, windowId) => {
     const getRandomColorFromServer: randomColorFromServer = await axios
       .get("http://localhost:3001/randomColor")
@@ -67,7 +60,3 @@ app.on("window-all-closed", () => {
     app.quit();
   }
 });
-function createBrowserWindow(): BrowserWindow {
-  const window = new manageBrowserWindow().initBrowserWindow();
-  return window;
-}

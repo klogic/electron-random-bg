@@ -1,7 +1,7 @@
 {
   "name": "random-bg-app",
   "version": "1.0.0",
-  "main": "main.js",
+  "main": "./out/main.js",
   "scripts": {
     "start": "electron .",
     "type-check": "tsc && electron .",
