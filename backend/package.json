@@ -4,7 +4,7 @@
   "main": "server.js",
   "license": "MIT",
   "scripts": {
-    "start": "tsc && node server.js"
+    "start": "tsc && node out/server.js"
   },
   "dependencies": {
     "express": "^4.17.1"
