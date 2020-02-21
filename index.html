@@ -26,16 +26,16 @@
     const { ipcRenderer } = require("electron");
     let windowId = null;
 
-    ipcRenderer.on("main-process-reply", (event, windowId) => {
-      let localWindow = windowId - 1; // real window id - 1 for display
+    ipcRenderer.on("main-process-reply", (event, newBrowserId) => {
+      let localWindow = newBrowserId - 1; // real window id - 1 for display
       document.getElementById("generateWindowContainer").innerHTML =
         `<div id='generateWindowBtn' class='btn btn-success'>+ Window</div>`;
 
-      if (windowId > 1) {
+      if (newBrowserId > 1) {
         // display if not the first window
         document.getElementById("randomColorBgContainer").innerHTML +=
-            `<div id='randomColorBtn-${windowId}' style='margin: 10px;' class='btn btn-success' 
-              onclick='sendRequestToServer(${windowId})'> ${localWindow}</div>`
+            `<div id='randomColorBtn-${newBrowserId}' style='margin: 10px;' class='btn btn-success' 
+              onclick='sendRequestToServer(${newBrowserId})'> ${localWindow}</div>`
         }
         document
           .querySelector("#generateWindowBtn")

@@ -1,19 +1,7 @@
 import { app, BrowserWindow, ipcMain } from "electron";
-import { manageBrowserWindow } from "./manager/manageBrowserWindow";
-import { windowObject, randomColorFromServer } from './model/index'
+import { manageBrowserWindow } from "./manager/index";
+import {randomColorFromServer } from './model/index'
 import axios, { AxiosPromise } from "axios";
-
-// for store window Obj
-let objWindow: windowObject = {};
-app.on("browser-window-created", (event, browser) => {
-  browser.webContents.on("did-finish-load", () => {
-    browser.webContents.send("main-process-reply", browser.id);
-  });
-  // objWindow[browser.id] = browser;
-  // browser.webContents.on("did-finish-load", () => {
-  //   objWindow[1].webContents.send("main-process-reply", browser.id);
-  // });
-});
 
 app.whenReady().then(() => {
   const newWindow = new manageBrowserWindow;
@@ -44,14 +32,14 @@ app.whenReady().then(() => {
           message: error.message
         };
       });
-    objWindow[windowId].webContents.send(
-      "window-change-background-reply",
-      getRandomColorFromServer
-    );
-    objWindow[1].webContents.send(
-      "window-change-background-reply-main",
-      getRandomColorFromServer
-    );
+    // objWindow[windowId].webContents.send(
+    //   "window-change-background-reply",
+    //   getRandomColorFromServer
+    // );
+    // objWindow[1].webContents.send(
+    //   "window-change-background-reply-main",
+    //   getRandomColorFromServer
+    // );
   });
 });
 
