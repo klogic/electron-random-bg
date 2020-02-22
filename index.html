@@ -50,7 +50,7 @@
       }
     })
     ipcRenderer.on("window-change-background-reply", (event, args)=> {
-      const {status, message} = args
+      const {status, message, windowId} = args
       if(status == 'success'){
         document.body.style.backgroundColor = message;
       }else{

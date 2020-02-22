@@ -19,9 +19,9 @@ export class manageBrowserWindow {
     });
 
     this.window.loadFile("index.html");
-    const registeredWindow = this.registerWindow(this.window);
+    this.registerWindow(this.window);
     this.informMainWindowCreatedToMainClient(this.window);
-    return registeredWindow;
+    return this.objWindow;
   }
 
   registerWindow(window: BrowserWindow) {
@@ -33,9 +33,5 @@ export class manageBrowserWindow {
     newWindow.webContents.on("did-finish-load", () => {
       mainWindow.webContents.send("main-process-reply", newWindow.id);
     });
-  }
-
-  getMainWindow(): BrowserWindow {
-    return this.objWindow[1];
   }
 }

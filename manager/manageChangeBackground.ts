@@ -9,12 +9,10 @@ export class manageChangeBackground {
     windowId: null,
     message: "response not found element color"
   };
-  constructor() {
+  constructor(allWindow: windowObject) {
     ipcMain.on("window-change-background", async (event, windowId) => {
-      this.getRandomColorFromServer(windowId);
-      const classMainBrowser = new manageBrowserWindow();
-      const getMainWindow = classMainBrowser.getMainWindow();
-      this.informChangeBackgroundToMain(getMainWindow);
+      await this.getRandomColorFromServer(windowId);
+      this.informChangeBackgroundToMain(allWindow[1], allWindow[windowId]);
     });
   }
 
@@ -34,10 +32,17 @@ export class manageChangeBackground {
     return this.responseColor;
   }
 
-  informChangeBackgroundToMain(mainWindow: BrowserWindow) {
-    mainWindow.webContents.send(
+  informChangeBackgroundToMain(
+    mainWindow: BrowserWindow,
+    targetWindow: BrowserWindow
+  ) {
+    targetWindow.webContents.send(
       "window-change-background-reply",
-      this.responseColor.windowId
+      this.responseColor
+    );
+    mainWindow.webContents.send(
+      "window-change-background-reply-main",
+      this.responseColor
     );
   }
 }
