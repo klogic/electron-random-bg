@@ -1,2 +1,2 @@
-export * from './manageBrowserWindow'
-export * from './manageChangeBackground'
+export * from "./manageBrowserWindow";
+export * from "./manageChangeBackground";

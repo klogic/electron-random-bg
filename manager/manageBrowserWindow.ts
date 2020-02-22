@@ -1,8 +1,8 @@
 import { BrowserWindow, ipcMain } from "electron";
-import { windowObject } from '../model/index'
+import { windowObject } from "../model/index";
 export class manageBrowserWindow {
   window: BrowserWindow;
-  objWindow: windowObject = {}
+  objWindow: windowObject = {};
   constructor() {
     ipcMain.on("window-created", (event, args) => {
       this.createBrowserWindow();
@@ -19,24 +19,23 @@ export class manageBrowserWindow {
     });
 
     this.window.loadFile("index.html");
-    const registeredWindow = this.registerWindow(this.window)
-    this.informMainWindowCreatedToMainClient(this.window)
+    const registeredWindow = this.registerWindow(this.window);
+    this.informMainWindowCreatedToMainClient(this.window);
     return registeredWindow;
   }
 
-  registerWindow(window:BrowserWindow){
-    return this.objWindow[window.id] = window
+  registerWindow(window: BrowserWindow) {
+    return (this.objWindow[window.id] = window);
   }
 
-  informMainWindowCreatedToMainClient(newWindow:BrowserWindow){
+  informMainWindowCreatedToMainClient(newWindow: BrowserWindow) {
     const mainWindow = this.objWindow[1];
     newWindow.webContents.on("did-finish-load", () => {
       mainWindow.webContents.send("main-process-reply", newWindow.id);
     });
   }
-  
-  getMainWindow(): BrowserWindow{
-    return this.objWindow[1]
-  }
 
+  getMainWindow(): BrowserWindow {
+    return this.objWindow[1];
+  }
 }

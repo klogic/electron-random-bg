@@ -1,5 +1,4 @@
-
-import {  BrowserWindow} from "electron";
+import { BrowserWindow } from "electron";
 export interface windowObject {
   [windowId: number]: BrowserWindow;
 }

@@ -3,7 +3,7 @@ import { randomColor } from "./libs/randomColor";
 
 const express = require("express");
 const app = express();
-const port = 3001;
+const port = 3002;
 
 app.get("/randomColor", (req: Request, res: Response) => {
   const getRandomColor = randomColor();
