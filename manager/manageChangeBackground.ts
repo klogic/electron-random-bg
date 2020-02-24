@@ -4,7 +4,7 @@ import { randomColorFromServer, windowObject } from "../model/index";
 import { manageBrowserWindow } from "../manager/index";
 
 export class manageChangeBackground {
-  responseColor: randomColorFromServer = {
+  private _responseColor: randomColorFromServer = {
     status: "error",
     windowId: null,
     message: "response not found element color"
@@ -16,33 +16,33 @@ export class manageChangeBackground {
     });
   }
 
-  async getRandomColorFromServer(windowId: number) {
-    this.responseColor.windowId = windowId;
+  public async getRandomColorFromServer(windowId: number) {
+    this._responseColor.windowId = windowId;
     await axios
       .get("http://localhost:3002/randomColor")
       .then(result => {
         if (result && result.data && result.data.color) {
-          this.responseColor.status = "success";
-          this.responseColor.message = result.data.color;
+          this._responseColor.status = "success";
+          this._responseColor.message = result.data.color;
         }
       })
       .catch(error => {
-        this.responseColor.message = error.message;
+        this._responseColor.message = error.message;
       });
-    return this.responseColor;
+    return this._responseColor;
   }
 
-  informChangeBackgroundToMain(
+  public informChangeBackgroundToMain(
     mainWindow: BrowserWindow,
     targetWindow: BrowserWindow
   ) {
     targetWindow.webContents.send(
       "window-change-background-reply",
-      this.responseColor
+      this._responseColor
     );
     mainWindow.webContents.send(
       "window-change-background-reply-main",
-      this.responseColor
+      this._responseColor
     );
   }
 }
